@@ -1,0 +1,92 @@
+<!-- public/index.html -->
+<!doctype html>
+<html lang="en" ng-app="fancychat" ng-controller="ChatController">
+
+<head>
+  <meta charset="UTF-8">
+  <base href="/">
+
+  <title>{{title}}</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="stylesheet" type="text/css" href="lib/angular-bootstrap-colorpicker/css/colorpicker.min.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+  <!-- JS -->
+  <script src="lib/underscore/underscore-min.js"></script>
+  <script src="lib/angular/angular.min.js"></script>
+  <script src="lib/angular-route/angular-route.min.js"></script>
+  <script src="lib/angular-resource/angular-resource.min.js"></script>
+  <script src="lib/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.min.js"></script>
+
+  <script src="config.js"></script>
+  <script src="application.js"></script>
+
+  <!-- MODULES -->
+  <script src="modules/core/core.client.module.js"></script>
+
+  <!-- SERVICES -->
+  <script src="modules/core/services/underscore.js"></script>
+  <script src="modules/core/services/main.client.service.js"></script>
+  <script src="modules/core/services/chatUsers.client.service.js"></script>
+
+  <!-- CONTROLLERS -->
+  <script src="modules/core/controllers/main.client.controller.js"></script>
+
+  <!-- DIRECTIVES -->
+  <script src="modules/core/directives/ng.enter.directive.js"></script>
+
+</head>
+
+<body>
+  <div class="container">
+
+    <h2>Angular test:</h2>
+    <h3>2+2={{2+2}}</h3>
+
+    <h2>DB connection test:</h2>
+    <div ng-repeat="entry in chatEntries">
+      {{entry.value}}
+    </div>
+
+    <!-- shoutbox -->
+    <div class="shout_box" onblur="self.focus()">
+      <div class="header">FancyShoutbox
+        <div class="close_btn">&nbsp;</div>
+      </div>
+      <div class="toggle_chat">
+        <div class="message_box">
+          <div ng-repeat="entry in chatEntries">
+            <div class="shout_msg">
+              <a ng-click="cite(entry._id, entry.value)"><img src="imgs/quototation.png" width="16" height="16"/></a>
+              <a ng-click="ignoreUser(entry.user._id, entry.user.nick)"><img src="imgs/user-remove-icon.png" width="16" height="16"/></a>
+              <a ng-click="delete(entry._id)"><img src="imgs/delete.png" width="16" height="16" ng-if="deleteVisible(entry.user.nick)"/></a>
+              <time>{{entry.created | date: 'short' }}</time>
+              <span class="username" ng-style="{{getColor(entry.user.nick)}}">{{entry.user.nick}}</span>
+              <span class="message">{{entry.value}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="user_info">
+          <!-- <input ng-model="username" name="shout_username" id="shout_username" type="text" placeholder="Nick" maxlength="15"/> -->
+          <div class="row">
+            <div class="col-sm-8">
+              <input ng-model="username" name="shout_username" id="shout_username" type="text" placeholder="Nick" maxlength="15" ng-enter="handleNick()"/>
+            </div>
+            <div class="col-sm-3">
+              <input colorpicker ng-model="hexPickerColor" type="text" placeholder="Color">
+            </div>
+          </div>
+          <input ng-model="message" name="shout_message" id="shout_message" type="text" focus="focusMessage" placeholder="Message [Enter]" maxlength="100" ng-enter="postShoutMessage()"/>
+          <!-- <textarea name="shout_message" id="shout_message"></textarea> -->
+          <input ng-model="msgfilter" name="shout_filter" id="shout_filter" type="text" placeholder="Filter (@today,@tome,@user:,@date:,@text:) [Enter]" maxlength="100" ng-enter="fireFilter()" />
+        </div>
+      </div>
+    </div>
+    <!-- shoutbox end -->
+
+  </div>
+</body>
+
+</html>
